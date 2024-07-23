@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/fatih/color"
@@ -35,29 +37,16 @@ type Weather struct {
 	} `json:"forecast"`
 }
 
-func Map[T, V any](ts []T, fn func(T) V) []V {
-	result := make([]V, len(ts))
-	for i, t := range ts {
-		result[i] = fn(t)
-	}
-	return result
-}
-
-func Flatten[T any](lists [][]T) []T {
-	var result []T
-	for _, list := range lists {
-		result = append(result, list...)
-	}
-	return result
-}
-
 func main() {
+	q := "Oslo"
+
+	if len(os.Args) >= 2 {
+		q = os.Args[1]
+	}
+
 	url := "http://api.weatherapi.com/v1/forecast.json"
 	url += "?key=f08587d8c70a40df8b6173339242307"
-	url += "&q=Oslo"
-	url += "&days=2"
-	url += "&aqi=no"
-	url += "&alerts=no"
+	url += "&days=1&q=" + strings.Replace(q, " ", "+", -1)
 
 	res, err := http.Get(url)
 	if err != nil {
