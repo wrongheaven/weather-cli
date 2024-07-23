@@ -47,7 +47,7 @@ go build -o weather-cli
 5. Move the binary to a location in path:
 
 ```sh
-mv weather-cli /usr/local/bin
+sudo mv weather-cli /usr/local/bin
 ```
 
 ## Usage
