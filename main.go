@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/fatih/color"
+	"github.com/joho/godotenv"
 )
 
 type Weather struct {
@@ -38,6 +39,13 @@ type Weather struct {
 }
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		panic(err)
+	}
+
+	key := os.Getenv("WEATHERAPI_KEY")
+
 	q := "Oslo"
 
 	if len(os.Args) >= 2 {
@@ -45,7 +53,7 @@ func main() {
 	}
 
 	url := "http://api.weatherapi.com/v1/forecast.json"
-	url += "?key=f08587d8c70a40df8b6173339242307"
+	url += "?key=" + key
 	url += "&days=1&q=" + strings.Replace(q, " ", "+", -1)
 
 	res, err := http.Get(url)
