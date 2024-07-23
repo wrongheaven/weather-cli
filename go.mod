@@ -1,4 +1,4 @@
-module wrongheaven/sun
+module wrongheaven/weather-cli
 
 go 1.22.2
 
