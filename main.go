@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -12,6 +13,9 @@ import (
 	"github.com/fatih/color"
 	"github.com/joho/godotenv"
 )
+
+//go:embed .env
+var envFile []byte
 
 type Weather struct {
 	Location struct {
@@ -38,12 +42,26 @@ type Weather struct {
 	} `json:"forecast"`
 }
 
-func main() {
-	err := godotenv.Load()
+func init() {
+	tmpFile, err := os.CreateTemp("", ".env")
 	if err != nil {
-		panic(err)
+		panic("Error creating temporary file for .env")
+	}
+	defer os.Remove(tmpFile.Name())
+
+	if _, err := tmpFile.Write(envFile); err != nil {
+		panic("Error writing to temporary .env file")
+	}
+	if err := tmpFile.Close(); err != nil {
+		panic("Error closing temporary .env file")
 	}
 
+	if err := godotenv.Load(tmpFile.Name()); err != nil {
+		panic("Error loading .env file")
+	}
+}
+
+func main() {
 	key := os.Getenv("WEATHERAPI_KEY")
 
 	q := "Oslo"
